@@ -1,4 +1,4 @@
-# BOiL-Zagadnienie-przewoznika
+# BOiL-Zagadnienie-posrednika
 
 ## Zagadnieie pośrednika
 Projket tworzony w ramach ćwiczeń projektowych z przedmiotu Badania operacyjne i logistyka.
