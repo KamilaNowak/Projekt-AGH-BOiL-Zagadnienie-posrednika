@@ -1,7 +1,7 @@
 # BOiL-Zagadnienie-posrednika
 
 ## Zagadnieie pośrednika
-Projket tworzony w ramach ćwiczeń projektowych z przedmiotu Badania operacyjne i logistyka.
+Program tworzony w ramach ćwiczeń projektowych z przedmiotu Badania operacyjne i logistyka.
 
 | Kierunek              | Przedmiot            | Semestr | Rok akademicki |Student realizujący projekt|
 | :-------------------: | :-------------------:| :-----: | :------------: |:--------------------------|
