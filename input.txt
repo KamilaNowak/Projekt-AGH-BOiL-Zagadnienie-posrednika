@@ -1,0 +1,32 @@
+CZ (cena zakupu) D1 (dostawca nr 1):
+1
+CZ D2: 
+1
+CZ D3:
+1
+CS (cena sprzedaży) O1 (odbiorca nr 1):
+1
+CS (cena sprzedaży) O2 (odbiorca nr 1):
+1
+kp (Koszt przewozu) D1 -> O1 [Wprowadź x jeżeli trasa ma być zablokowana]
+x
+kp D1-> O2
+x
+kp D2 -> O1
+x
+kp D2 -> O2
+x
+kp D3 -> O1
+x
+kp D3 -> O2
+x
+popyt O1
+1
+popyt O2
+1
+podaż D1
+1
+podaż D2
+1
+podaż D3
+1
