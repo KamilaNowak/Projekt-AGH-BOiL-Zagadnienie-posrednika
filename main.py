@@ -18,12 +18,20 @@ def licz_zyski_jednostkowe(ceny_sprzedazy,koszty_zakupu, koszty_transportu):
     return zyski_jednostkowe
 
 
-def licz_optymalny_plan_przewozow():
-    opt_przewozy = np.zeros(shape=(4, 4))
+def licz_optymalny_plan_przewozow(zyski_jednostkowe,popyt, podaz):
+    opt_przewozy = zyski_jednostkowe
 
-    # TODO
-    # obliczenie przewozów od tras, na których osiągany zysk jest największy
-    return opt_przewozy
+    #dodanie zera do fikcyjnych odbiorców i dostawców
+    zeros_2 = np.array([[0, 0]])
+    zeros_4 = np.array([[0, 0, 0, 0]])
+    przewozy_wiersz = np.concatenate((opt_przewozy, zeros_2), axis=0)
+    przewozy_kolumna = np.concatenate((przewozy_wiersz, zeros_4.T), axis=1)
+
+    popyt_calosc = np.append(popyt, np.sum(podaz))
+    podaz_calosc = np.append(podaz, np.sum(popyt))
+    print(popyt_calosc)
+    print(podaz_calosc)
+    return przewozy_kolumna
 
 
 def licz_alfa_beta(koszty_transportu, zyski_jednostkowe):
@@ -153,8 +161,14 @@ for x in f1:
 f.close()
 
 if __name__ == "__main__":
-    # testy
-    mt = np.array([[10., 0., 10.], [0., 28., 2.], [0., 0., 15.]])
-    mp = np.array([[12.0, 1.0, 3.0], [6.0, 4.0, -1.0], [0.0, 0.0, 0.0]])
+   # testy
 
-    print(licz_alfa_beta(mt, mp))
+    op = np.array([[12, 1], [6, 4], [3, -1]])
+    t_popyt = np.array([20, 30])
+    t_podaz = np.array([10, 28, 27])
+    t1 = licz_optymalny_plan_przewozow(op, t_popyt, t_podaz)
+    print(t1)
+   # mt = np.array([[10., 0., 10.], [0., 28., 2.], [0., 0., 15.]])
+   # mp = np.array([[12.0, 1.0, 3.0], [6.0, 4.0, -1.0], [0.0, 0.0, 0.0]])
+
+    #print(licz_alfa_beta(mt, mp))
