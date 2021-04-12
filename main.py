@@ -72,7 +72,13 @@ def licz_alfa_beta(koszty_transportu, zyski_jednostkowe):
 
     return alfa, beta
 
+def licz_delty(zyski_jednostkowe, plan_przewozow,alfa, beta):
+    delty = np.zeros(shape=(4, 3))
 
+    for idx, x in np.ndenumerate(plan_przewozow):
+        if plan_przewozow[idx] == 0.0:
+           delty[idx] = zyski_jednostkowe[idx] - alfa[idx[0]] - beta[idx[1]]
+    return delty
 # ceny zakupu/sprzedaży
 cz_D1 = 0
 cz_D2 = 0
@@ -203,4 +209,14 @@ if __name__ == "__main__":
     mp = np.array([[12.0, 1.0, 3.0], [6.0, 4.0, -1.0], [0.0, 0.0, 0.0]])
 
     # OK WYNIK
-    print(licz_alfa_beta(mt, mp))
+    alfa, beta = licz_alfa_beta(mt, mp)
+    print(alfa)
+
+    optymalne_przewozy = zyski_temp
+    przewozy_wiersze = np.concatenate((optymalne_przewozy, np.array([[0.0, 0.0]])), axis=0)
+    zyski = np.concatenate((przewozy_wiersze, (np.array([[0.0, 0.0, 0.0, 0.0]])).T), axis=1)
+    test_alfa = np.array([3, -1, 0, 0])
+    test_beta = np.array([9, 5, 0])
+
+    # OK WYNIK
+    print(licz_delty(zyski, licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz), test_alfa, test_beta))
