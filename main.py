@@ -9,36 +9,58 @@ podaz = np.zeros([3])
 popyt = np.zeros([2])
 
 
-def licz_zyski_jednostkowe(ceny_sprzedazy,koszty_zakupu, koszty_transportu):
+def licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
     zyski_jednostkowe = np.zeros(shape=(3, 2))
 
     for idx, x in np.ndenumerate(zyski_jednostkowe):
         zyski_jednostkowe[idx] = ceny_sprzedazy[idx[1]] - (koszty_zakupu[idx[0]] + koszty_transportu[idx])
-
     return zyski_jednostkowe
 
 
-def licz_optymalny_plan_przewozow(zyski_jednostkowe,popyt, podaz):
-    opt_przewozy = zyski_jednostkowe
+def licz_optymalny_plan_przewozow(zyski_jednostkowe, popyt, podaz):
+    plan_przewozow = np.zeros(shape=(4, 3))
+    optymalne_przewozy = zyski_jednostkowe
+    przewozy_wiersze = np.concatenate((optymalne_przewozy, np.array([[0.0, 0.0]])), axis=0)
+    zyski = np.concatenate((przewozy_wiersze, (np.array([[0.0, 0.0, 0.0, 0.0]])).T), axis=1)
 
-    #dodanie zera do fikcyjnych odbiorców i dostawców
-    zeros_2 = np.array([[0, 0]])
-    zeros_4 = np.array([[0, 0, 0, 0]])
-    przewozy_wiersz = np.concatenate((opt_przewozy, zeros_2), axis=0)
-    przewozy_kolumna = np.concatenate((przewozy_wiersz, zeros_4.T), axis=1)
+    popyt_z_fikcyjnymi = np.append(popyt, np.sum(podaz))
+    podaz_z_fikcyjnymi = np.append(podaz, np.sum(popyt))
 
-    popyt_calosc = np.append(popyt, np.sum(podaz))
-    podaz_calosc = np.append(podaz, np.sum(popyt))
-    print(popyt_calosc)
-    print(podaz_calosc)
-    return przewozy_kolumna
+    while not np.isnan(zyski).all():
+        if not np.isnan(zyski[:3, :2]).all():
+            maximum = np.nanmax(zyski[:3, :2])
+        else:
+            maximum = np.nanmax(zyski)
+
+        wiersz_max, kolumna_max = np.nonzero(zyski == maximum)
+        index_max = list(map(int, [wiersz_max[0], kolumna_max[0]]))
+        zyski[index_max[0], index_max[1]] = np.nan
+
+        plan_przewozow[int(index_max[0]), int(index_max[1])] = min(popyt_z_fikcyjnymi[int(index_max[1])],
+                                                                   podaz_z_fikcyjnymi[int(index_max[0])])
+
+        popyt_kopia = list(popyt_z_fikcyjnymi)
+        wartosc_zaleznosci = popyt_kopia[int(index_max[1])]
+
+        popyt_z_fikcyjnymi[int(index_max[1])] = max(0, popyt_z_fikcyjnymi[int(index_max[1])] - podaz_z_fikcyjnymi[
+            int(index_max[0])])
+        podaz_z_fikcyjnymi[int(index_max[0])] = max(0, podaz_z_fikcyjnymi[int(index_max[0])] - wartosc_zaleznosci)
+
+        if (popyt_z_fikcyjnymi[int(index_max[1])] == 0):
+            zyski[:, index_max[1]] = np.nan
+
+        if (podaz_z_fikcyjnymi[int(index_max[0])] == 0):
+            zyski[index_max[0], :] = np.nan
+
+    return plan_przewozow
 
 
 def licz_alfa_beta(koszty_transportu, zyski_jednostkowe):
+    wiersze, kolumny = np.where(koszty_transportu != 0.0)
+    temp = 0
+
     alfa = [0, np.nan, np.nan]
     beta = [np.nan, np.nan, np.nan]
-    temp = 0
-    wiersze, kolumny = np.where(koszty_transportu != 0.0)
 
     while temp < 100 and np.any(np.isnan(beta)) or np.any(np.isnan(alfa)):
         for i, j in zip(wiersze, kolumny):
@@ -161,14 +183,24 @@ for x in f1:
 f.close()
 
 if __name__ == "__main__":
-   # testy
+    # testy
+    popyt = np.array([10, 28, 27])
+    podaz = np.array([20, 30])
+    koszty_transportu = np.array([[8, 14], [12, 9], [17, 19]])
+    ceny_sprzedazy = np.array([10, 12])
+    koszty_zakupu = np.array([20, 25, 30])
 
-    op = np.array([[12, 1], [6, 4], [3, -1]])
-    t_popyt = np.array([20, 30])
-    t_podaz = np.array([10, 28, 27])
-    t1 = licz_optymalny_plan_przewozow(op, t_popyt, t_podaz)
-    print(t1)
-   # mt = np.array([[10., 0., 10.], [0., 28., 2.], [0., 0., 15.]])
-   # mp = np.array([[12.0, 1.0, 3.0], [6.0, 4.0, -1.0], [0.0, 0.0, 0.0]])
+    # OK WYNIK
+    print(licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu))
+    zyski_temp = np.array([[12, 1], [6, 4], [3, -1]])
+    test_popyt = np.array([20, 30])
+    test_podaz = np.array([10, 28, 27])
 
-    #print(licz_alfa_beta(mt, mp))
+    # OK WYNIK
+    print(licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz))
+
+    mt = np.array([[10., 0., 10.], [0., 28., 2.], [0., 0., 15.]])
+    mp = np.array([[12.0, 1.0, 3.0], [6.0, 4.0, -1.0], [0.0, 0.0, 0.0]])
+
+    # OK WYNIK
+    print(licz_alfa_beta(mt, mp))
