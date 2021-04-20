@@ -9,6 +9,8 @@ podaz = np.zeros([3])
 popyt = np.zeros([2])
 
 
+
+# funkcja liczy zyski jednostkowe na trasach, i zwraca macierz z wynikami
 def licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
     zyski_jednostkowe = np.zeros(shape=(3, 2))
 
@@ -17,6 +19,10 @@ def licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
     return zyski_jednostkowe
 
 
+# funckja liczy optymalny plan przewozów tzn. dodaje fikcyjnego dostawcę i fikcyjnego odbiorcę wypełniając w tych miejscach macierz zerami.
+# rozpoczynamy rozpisywanie przewozów od tras, na których osiągany zysk jest największy.
+# Pamiętamy przy tym o regule, ze na poczatku  rozpisujemy trasy między dostawcami i odbiorcami rzeczywistymi, potem fikcyjnymi.
+# Funckja zwraca: macierz, z wartoścami na trasach, a tam gdzie nie ma wartości są nany
 def licz_optymalny_plan_przewozow(zyski_jednostkowe, popyt, podaz):
     plan_przewozow = np.zeros(shape=(4, 3))
     optymalne_przewozy = zyski_jednostkowe
@@ -54,7 +60,7 @@ def licz_optymalny_plan_przewozow(zyski_jednostkowe, popyt, podaz):
 
     return plan_przewozow
 
-
+# Funckja obllicza alfy i bety na podstawy macierzy kosztów transportu i zysków jednostkowych. Zwraca obiekt zawierający dwie tablice = aldy oraz bety
 def licz_alfa_beta(koszty_transportu, zyski_jednostkowe):
     wiersze, kolumny = np.where(koszty_transportu != 0.0)
     temp = 0
@@ -190,6 +196,7 @@ f.close()
 
 if __name__ == "__main__":
     # testy
+    #dane nie są brane z poprzednich oblcizeń, były podstawiane takie dane, żeby były takie same jak wychodziły mi an kartce ¯\_(ツ)_/¯
     popyt = np.array([10, 28, 27])
     podaz = np.array([20, 30])
     koszty_transportu = np.array([[8, 14], [12, 9], [17, 19]])
