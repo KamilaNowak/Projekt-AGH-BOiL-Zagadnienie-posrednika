@@ -14,4 +14,10 @@ To do: </br>
 3. Zaimplementować algorytm maksymalizujący zyski ✓ 
 4. Zaimplementować funckję liczącą optymalny plan przewozów  ✓ 
 5. Zaimplementować funckję liczącą alfy i bety  ✓ 
-6. Zaimplementować funkcję maksymalizującą zysk na danej trasie
+6. Zaimplementować funkcję maksymalizującą zysk na danej trasie </br>
+7. Zapisywanie danych do pliku wyniki.txt:
+-zyski jednostkowe,
+-optymalne przewozy,
+-koszt całkowity, 
+-zysk pośrednika (początkowy i końcowy)
+
