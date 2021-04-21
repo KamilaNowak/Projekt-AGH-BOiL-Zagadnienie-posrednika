@@ -19,7 +19,7 @@ To do: </br>
 -zyski jednostkowe, ✓</br>
 -optymalne przewozy,</br>
 -koszt całkowity, </br>
--zysk pośrednika (początkowy i końcowy) WIP </br>
+-zysk pośrednika (początkowy i końcowy) ✓ </br>
 
 </br>
 Materiały pomocnicze: https://docplayer.pl/112982574-Rozwiazanie-zadania-1-krok-tym-razem-naszym-celem-jest-nie-tak-jak-w-przypadku-typowego-zadania-transportowego.html?fbclid=IwAR3gNDxifXaewfWMn8DVIJh-tJHKMFF43JYZbBDcdV5thCl9pukAUrxGUFU
