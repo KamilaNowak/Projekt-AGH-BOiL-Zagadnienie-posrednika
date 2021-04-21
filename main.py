@@ -1,5 +1,6 @@
 import numpy as np  # Do ułatwienia operacji na tablicach
 from math import isnan
+import funkcje
 
 # deklaracja tablic, aby mozna bylo potem łatwo operować na danych
 koszty_transportu = np.zeros(shape=(3, 2))
@@ -7,121 +8,6 @@ ceny_sprzedazy = np.zeros([2])
 koszty_zakupu = np.zeros([3])
 podaz = np.zeros([3])
 popyt = np.zeros([2])
-
-
-# funkcja liczy zyski jednostkowe na trasach, i zwraca macierz z wynikami
-def licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
-    zyski_jednostkowe = np.zeros(shape=(3, 2))
-
-    for idx, x in np.ndenumerate(zyski_jednostkowe):
-        zyski_jednostkowe[idx] = ceny_sprzedazy[idx[1]] - \
-            (koszty_zakupu[idx[0]] + koszty_transportu[idx])
-
-    # zapis kosztów jednostkowych do pliku
-    f = open("wynik.txt", "w")
-    f.write("Zyski jednostkowe:\n")
-    f.write(str(zyski_jednostkowe[0][0])+"|")
-    f.write(str(zyski_jednostkowe[0][1])+"\n")
-    f.write(str(zyski_jednostkowe[1][0])+"|")
-    f.write(str(zyski_jednostkowe[1][1])+"\n")
-    f.write(str(zyski_jednostkowe[2][0])+"|")
-    f.write(str(zyski_jednostkowe[2][1])+"\n")
-    f.close()
-    return zyski_jednostkowe
-
-
-# funckja liczy optymalny plan przewozów tzn. dodaje fikcyjnego dostawcę i fikcyjnego odbiorcę wypełniając w tych miejscach macierz zerami.
-# rozpoczynamy rozpisywanie przewozów od tras, na których osiągany zysk jest największy.
-# Pamiętamy przy tym o regule, ze na poczatku  rozpisujemy trasy między dostawcami i odbiorcami rzeczywistymi, potem fikcyjnymi.
-# Funckja zwraca: macierz, z wartoścami na trasach, a tam gdzie nie ma wartości są nany
-def licz_optymalny_plan_przewozow(zyski_jednostkowe, popyt, podaz):
-    # tabela przewozów z fikcyjnym dostawcą i odbiorcą
-    plan_przewozow = np.zeros(shape=(4, 3))
-    optymalne_przewozy = zyski_jednostkowe
-    przewozy_wiersze = np.concatenate(
-        (optymalne_przewozy, np.array([[0.0, 0.0]])), axis=0)
-    zyski = np.concatenate(
-        (przewozy_wiersze, (np.array([[0.0, 0.0, 0.0, 0.0]])).T), axis=1)
-
-    popyt_z_fikcyjnymi = np.append(popyt, np.sum(podaz))
-    podaz_z_fikcyjnymi = np.append(podaz, np.sum(popyt))
-
-    while not np.isnan(zyski).all():
-        if not np.isnan(zyski[:3, :2]).all():
-            maximum = np.nanmax(zyski[:3, :2])
-        else:
-            maximum = np.nanmax(zyski)
-
-        wiersz_max, kolumna_max = np.nonzero(zyski == maximum)
-        index_max = list(map(int, [wiersz_max[0], kolumna_max[0]]))
-        zyski[index_max[0], index_max[1]] = np.nan
-
-        plan_przewozow[int(index_max[0]), int(index_max[1])] = min(popyt_z_fikcyjnymi[int(index_max[1])],
-                                                                   podaz_z_fikcyjnymi[int(index_max[0])])
-
-        popyt_kopia = list(popyt_z_fikcyjnymi)
-        wartosc_zaleznosci = popyt_kopia[int(index_max[1])]
-
-        popyt_z_fikcyjnymi[int(index_max[1])] = max(0, popyt_z_fikcyjnymi[int(index_max[1])] - podaz_z_fikcyjnymi[
-            int(index_max[0])])
-        podaz_z_fikcyjnymi[int(index_max[0])] = max(
-            0, podaz_z_fikcyjnymi[int(index_max[0])] - wartosc_zaleznosci)
-
-        if (popyt_z_fikcyjnymi[int(index_max[1])] == 0):
-            zyski[:, index_max[1]] = np.nan
-
-        if (podaz_z_fikcyjnymi[int(index_max[0])] == 0):
-            zyski[index_max[0], :] = np.nan
-
-    return plan_przewozow
-
-# Funckja obllicza alfy i bety na podstawy macierzy kosztów transportu i zysków jednostkowych. Zwraca obiekt zawierający dwie tablice = aldy oraz bety
-
-
-def licz_alfa_beta(koszty_transportu, zyski_jednostkowe):
-    wiersze, kolumny = np.where(koszty_transportu != 0.0)
-    temp = 0
-
-    alfa = [0, np.nan, np.nan]
-    beta = [np.nan, np.nan, np.nan]
-
-    while temp < 100 and np.any(np.isnan(beta)) or np.any(np.isnan(alfa)):
-        for i, j in zip(wiersze, kolumny):
-            if (isnan(alfa[i])) and not (isnan(beta[j])):
-                alfa[i] = zyski_jednostkowe[i, j] - beta[j]
-            elif not (isnan(alfa[i]) and isnan(beta[j])):
-                beta[j] = zyski_jednostkowe[i, j] - alfa[i]
-        temp = temp + 1
-
-    return alfa, beta
-
-
-def licz_delty(zyski_jednostkowe, plan_przewozow, alfa, beta):
-    delty = np.zeros(shape=(4, 3))  # tabela wskaźników optymalności
-
-    for idx, x in np.ndenumerate(plan_przewozow):
-        if plan_przewozow[idx] == 0.0:
-           delty[idx] = zyski_jednostkowe[idx] - alfa[idx[0]] - beta[idx[1]]
-    return delty
-
-# Zapisywanie zysku pośrednika do pliku , póki co nie uwzględnia blokowania tras
-# kontrola=0 -> zyski poczatkowe
-# kontrola=1 -> zyski koncowe
-
-
-def zapisz_zyski_do_pliku(zyski_jednostkowe, plan_przewozow, kontrola):
-    zyski = 0
-    for i in range(3):
-        for j in range(2):
-            zyski += zyski_jednostkowe[i][j]*plan_przewozow[i][j]
-
-    f = open("wynik.txt", "a")
-    if(kontrola == 0):
-        f.write("Zysk poczatkowy:\n")
-    else:
-        f.write("Zysk koncowy:\n")  
-    f.write(str(zyski)+"\n")
-    f.close()   
 
 # ceny zakupu/sprzedaży
 cz_D1 = 0
@@ -248,16 +134,16 @@ if __name__ == "__main__":
     test_podaz = np.array([10, 28, 27])
 
     # OK WYNIK
-    print(licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz))
+    print(funkcje.licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz))
 
     # test funkcji zapisującej zyski przwoznika
-    zapisz_zyski_do_pliku(zyski_temp,licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz),0)
+    funkcje.zapisz_zyski_do_pliku(zyski_temp,funkcje.licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz),0)
 
     mt = np.array([[10., 0., 10.], [0., 28., 2.], [0., 0., 15.]])
     mp = np.array([[12.0, 1.0, 3.0], [6.0, 4.0, -1.0], [0.0, 0.0, 0.0]])
 
     # OK WYNIK
-    alfa, beta = licz_alfa_beta(mt, mp)
+    alfa, beta = funkcje.licz_alfa_beta(mt, mp)
     print(alfa)
 
     optymalne_przewozy = zyski_temp
@@ -267,4 +153,4 @@ if __name__ == "__main__":
     test_beta = np.array([9, 5, 0])
 
     # OK WYNIK
-    print(licz_delty(zyski, licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz), test_alfa, test_beta))
+    print(funkcje.licz_delty(zyski, funkcje.licz_optymalny_plan_przewozow(zyski_temp, test_popyt, test_podaz), test_alfa, test_beta))
