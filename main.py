@@ -30,42 +30,42 @@ for x in f1:
     if (y == 11):
         if "x" in x:
             print("Trasa zablokowana")
-            koszty_transportu[0][0] ="zablokowana"
+            koszty_transportu[0][0] = "zablokowana"
         else:
             kp_D1_O1 = int(x)
             koszty_transportu[0][0] = int(x)
     if (y == 13):
         if "x" in x:
             print("Trasa zablokowana")
-            koszty_transportu[0][1] ="zablokowana"
+            koszty_transportu[0][1] = "zablokowana"
         else:
             kp_D1_O2 = int(x)
             koszty_transportu[0][1] = int(x)
     if (y == 15):
         if "x" in x:
             print("Trasa zablokowana")
-            koszty_transportu[1][0] ="zablokowana"
+            koszty_transportu[1][0] = "zablokowana"
         else:
             kp_D2_O1 = int(x)
             koszty_transportu[1][0] = int(x)
     if (y == 17):
         if "x" in x:
             print("Trasa zablokowana")
-            koszty_transportu[1][1] ="zablokowana"
+            koszty_transportu[1][1] = "zablokowana"
         else:
             kp_D2_O2 = int(x)
             koszty_transportu[1][1] = int(x)
     if (y == 19):
         if "x" in x:
             print("Trasa zablokowana")
-            koszty_transportu[2][0] ="zablokowana"
+            koszty_transportu[2][0] = "zablokowana"
         else:
             kp_D3_O1 = int(x)
             koszty_transportu[2][0] = int(x)
     if (y == 21):
         if "x" in x:
             print("Trasa zablokowana")
-            koszty_transportu[2][1] ="zablokowana"
+            koszty_transportu[2][1] = "zablokowana"
         else:
             kp_D3_O2 = int(x)
             koszty_transportu[2][1] = int(x)
@@ -83,31 +83,34 @@ for x in f1:
 f.close()
 
 if __name__ == "__main__":
-    #wyznaczenie zysków jednostkowych (zyski_temp)
-    zyski_jednostkowe=funkcje.licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu)
-    print("Zyski jednostkowe:")
+    # wyznaczenie zysków jednostkowych (zyski_temp)
+    zyski_jednostkowe = funkcje.licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu)
+    print("\nZyski jednostkowe:")
     print(zyski_jednostkowe)
-    print("\n")
-    #wyznaczenie tablicy transportowej (plan_przewozow)
-    tablica_transportowa=funkcje.licz_optymalny_plan_przewozow(zyski_jednostkowe,popyt,podaz)
-    print("Tablica transportowa:")
+    # wyznaczenie tablicy transportowej (plan_przewozow)
+    tablica_transportowa = funkcje.licz_optymalny_plan_przewozow(zyski_jednostkowe, popyt, podaz)
+    print("\nTablica transportowa:")
     print(tablica_transportowa)
-    print("\n")
 
-    funkcje.zapisz_zyski_do_pliku(zyski_jednostkowe,tablica_transportowa,0)
+    funkcje.zapisz_zyski_do_pliku(zyski_jednostkowe, tablica_transportowa, 0)
 
-    #Wyznaczenie alfy i bety
-    alfa,beta=funkcje.licz_alfa_beta(tablica_transportowa,zyski_jednostkowe)
-    print("Alfa:")
+    # Wyznaczenie alfy i bety
+    alfa, beta = funkcje.licz_alfa_beta(tablica_transportowa, zyski_jednostkowe)
+    print("\nAlfa:")
     print(alfa)
-    print("\n")
-    print("Beta:")
+    print("\nBeta:")
     print(beta)
-    print("\n")
 
-    #Co robią te dwie linijki?
-    delty=funkcje.licz_delty(zyski_jednostkowe,tablica_transportowa,alfa,beta)
+    print("\nDelty:")
+    delty = funkcje.licz_delty(zyski_jednostkowe, tablica_transportowa, alfa, beta)
     print(delty)
 
+    print("\nMaksymalizacja zyskow:")
+    print(funkcje.licz_maksymalizacje_zyskow(tablica_transportowa, delty))
+
+    print("\nTEST PRZYKLADU:")
+    delty_test = np.array([[0., -7, 0., -3.], [-2., 0., 0., 1.], [-9., -5., 0., 0.]])
+    tab_trans = np.array([[10., 0., 10., 0.], [0., 28., 2., 0.], [0., 0., 15., 50.]])
+    print(funkcje.licz_maksymalizacje_zyskow(tab_trans, delty_test))
 
 
