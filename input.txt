@@ -1,32 +1,32 @@
 CZ (cena zakupu) D1 (dostawca nr 1):
-1
+20
 CZ D2: 
-1
+25
 CZ D3:
-1
+30
 CS (cena sprzedaży) O1 (odbiorca nr 1):
-1
+10
 CS (cena sprzedaży) O2 (odbiorca nr 1):
-1
+12
 kp (Koszt przewozu) D1 -> O1 [Wprowadź x jeżeli trasa ma być zablokowana]
-x
+8
 kp D1-> O2
-x
+14
 kp D2 -> O1
-x
+12
 kp D2 -> O2
-x
+9
 kp D3 -> O1
-x
+17
 kp D3 -> O2
-x
+19
 popyt O1
-1
+20
 popyt O2
-1
+30
 podaż D1
-1
+10
 podaż D2
-1
+28
 podaż D3
-1
+27
