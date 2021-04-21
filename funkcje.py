@@ -123,7 +123,8 @@ def zapisz_zyski_do_pliku(zyski_jednostkowe, plan_przewozow, kontrola):
     f.write(str(zyski) + "\n")
     f.close()
 
-
+# funckja maksymalizuje zyski soiagane przez posrednika.
+# Tzn wybiera dodatni element w tablicy i dodaje/odejmuje wartość minimum z z tych tras/
 def licz_maksymalizacje_zyskow(tab_transportowa, delty):
 
     wiersze, kolumny = np.where(delty > 0.)
