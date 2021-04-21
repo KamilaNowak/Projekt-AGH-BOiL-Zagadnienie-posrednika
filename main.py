@@ -69,13 +69,13 @@ for x in f1:
         else:
             kp_D3_O2 = int(x)
             koszty_transportu[2][1] = int(x)
-    if (y == 23):        
+    if (y == 23):
         popyt[0] = int(x)
-    if (y == 25):        
+    if (y == 25):
         popyt[1] = int(x)
-    if (y == 27):        
+    if (y == 27):
         podaz[0] = int(x)
-    if (y == 29):        
+    if (y == 29):
         podaz[1] = int(x)
     if (y == 31):
         podaz[2] = int(x)
@@ -84,20 +84,20 @@ f.close()
 
 if __name__ == "__main__":
     #wyznaczenie zysków jednostkowych (zyski_temp)
-    zyski_jednostkowe=funkcje.licz_zyski_jednostkowe(ceny_sprzedazy,koszty_zakupu,koszty_transportu)
+    zyski_jednostkowe=funkcje.licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu)
     print("Zyski jednostkowe:")
     print(zyski_jednostkowe)
     print("\n")
     #wyznaczenie tablicy transportowej (plan_przewozow)
-    tablica_transportowa=funkcje.licz_optymalny_plan_przewozow(zyski_jednostkowe,popyt,podaz)    
+    tablica_transportowa=funkcje.licz_optymalny_plan_przewozow(zyski_jednostkowe,popyt,podaz)
     print("Tablica transportowa:")
     print(tablica_transportowa)
     print("\n")
 
-    funkcje.zapisz_zyski_do_pliku(zyski_jednostkowe,tablica_transportowa,0) 
+    funkcje.zapisz_zyski_do_pliku(zyski_jednostkowe,tablica_transportowa,0)
 
     #Wyznaczenie alfy i bety
-    alfa,beta=funkcje.licz_alfa_beta(koszty_transportu,zyski_jednostkowe)
+    alfa,beta=funkcje.licz_alfa_beta(tablica_transportowa,zyski_jednostkowe)
     print("Alfa:")
     print(alfa)
     print("\n")
@@ -106,12 +106,8 @@ if __name__ == "__main__":
     print("\n")
 
     #Co robią te dwie linijki?
-    przewozy_wiersze = np.concatenate((tablica_transportowa, np.array([[0.0, 0.0]])), axis=0)
-    zyski = np.concatenate((przewozy_wiersze, (np.array([[0.0, 0.0, 0.0, 0.0]])).T), axis=1)
-
-    delty=funkcje.licz_delty(zyski,tablica_transportowa,alfa,beta)
-
+    delty=funkcje.licz_delty(zyski_jednostkowe,tablica_transportowa,alfa,beta)
     print(delty)
 
 
-   
+

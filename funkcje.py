@@ -71,28 +71,35 @@ def licz_optymalny_plan_przewozow(zyski_jednostkowe, popyt, podaz):
 
 
 def licz_alfa_beta(koszty_transportu, zyski_jednostkowe):
+
+    zj = np.concatenate((zyski_jednostkowe, np.array([[0.0, 0.0]])), axis=0)
+    zyski_jednostkowe = np.concatenate((zj, (np.array([[0.0, 0.0, 0.0, 0.0]])).T), axis=1)
+
     wiersze, kolumny = np.where(koszty_transportu != 0.0)
     temp = 0
 
-    alfa = [0, np.nan, np.nan]
+    alfa = [0, np.nan, np.nan,np.nan]
     beta = [np.nan, np.nan, np.nan]
 
-    while temp < 100 and np.any(np.isnan(beta)) or np.any(np.isnan(alfa)):
+    while temp < 20 and np.any(np.isnan(beta)) or np.any(np.isnan(alfa)):
         for i, j in zip(wiersze, kolumny):
             if (isnan(alfa[i])) and not (isnan(beta[j])):
                 alfa[i] = zyski_jednostkowe[i, j] - beta[j]
             elif not (isnan(alfa[i]) and isnan(beta[j])):
                 beta[j] = zyski_jednostkowe[i, j] - alfa[i]
         temp = temp + 1
-
     return alfa, beta
 
 
 def licz_delty(zyski_jednostkowe, plan_przewozow, alfa, beta):
+
+    zj = np.concatenate((zyski_jednostkowe, np.array([[0.0, 0.0]])), axis=0)
+    zyski_jednostkowe = np.concatenate((zj, (np.array([[0.0, 0.0, 0.0, 0.0]])).T), axis=1)
+
     delty = np.zeros(shape=(4, 3))  # tabela wskaźników optymalności
 
     for idx, x in np.ndenumerate(plan_przewozow):
-        if plan_przewozow[idx] == 0.0:
+        if (plan_przewozow[idx] == 0.0):
            delty[idx] = zyski_jednostkowe[idx] - alfa[idx[0]] - beta[idx[1]]
     return delty
 
