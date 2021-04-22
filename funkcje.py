@@ -3,7 +3,7 @@ from math import isnan
 
 
 # funkcja liczy zyski jednostkowe na trasach, i zwraca macierz z wynikami
-def licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
+def licz_i_zapisz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
     zyski_jednostkowe = np.zeros(shape=(3, 2))
 
     for idx, x in np.ndenumerate(zyski_jednostkowe):
@@ -13,12 +13,13 @@ def licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
     # zapis kosztów jednostkowych do pliku
     f = open("wynik.txt", "w")
     f.write("Zyski jednostkowe:\n")
-    f.write(str(zyski_jednostkowe[0][0]) + "|")
-    f.write(str(zyski_jednostkowe[0][1]) + "\n")
-    f.write(str(zyski_jednostkowe[1][0]) + "|")
-    f.write(str(zyski_jednostkowe[1][1]) + "\n")
-    f.write(str(zyski_jednostkowe[2][0]) + "|")
-    f.write(str(zyski_jednostkowe[2][1]) + "\n")
+    f.write("   |_O1__|_O2__|\n")
+    f.write("D1 |"+str(zyski_jednostkowe[0][0]) + "|")
+    f.write(str(zyski_jednostkowe[0][1]) + "|\n")
+    f.write("D2 |"+str(zyski_jednostkowe[1][0]) + "|")
+    f.write(str(zyski_jednostkowe[1][1]) + "|\n")
+    f.write("D3 |"+str(zyski_jednostkowe[2][0]) + "|")
+    f.write(str(zyski_jednostkowe[2][1]) + "|\n")
     f.close()
     return zyski_jednostkowe
 
@@ -104,12 +105,12 @@ def licz_delty(zyski_jednostkowe, plan_przewozow, alfa, beta):
     return delty
 
 
+
+
 # Zapisywanie zysku pośrednika do pliku , póki co nie uwzględnia blokowania tras
 # kontrola=0 -> zyski poczatkowe
 # kontrola=1 -> zyski koncowe
-
-
-def zapisz_zyski_do_pliku(zyski_jednostkowe, plan_przewozow, kontrola):
+def zapisz_zysk_calkowity_do_pliku(zyski_jednostkowe, plan_przewozow, kontrola):
     zyski = 0
     for i in range(3):
         for j in range(2):
@@ -117,9 +118,9 @@ def zapisz_zyski_do_pliku(zyski_jednostkowe, plan_przewozow, kontrola):
 
     f = open("wynik.txt", "a")
     if (kontrola == 0):
-        f.write("Zysk poczatkowy:\n")
+        f.write("\nZysk poczatkowy:\n")
     else:
-        f.write("Zysk koncowy:\n")
+        f.write("\nZysk koncowy:\n")
     f.write(str(zyski) + "\n")
     f.close()
 
@@ -149,3 +150,35 @@ def licz_maksymalizacje_zyskow(tab_transportowa, delty):
                     tab_transportowa[Y, j] = tab_transportowa[Y, j] - min_z_tras
 
     return tab_transportowa
+
+def licz_i_zapisz_koszt_calkowity(tablica_transportowa,koszty_zakupu,koszty_transportu):
+    koszt_calkowity=0
+    for i in range(3):
+        for j in range(2):
+            koszt_calkowity+=tablica_transportowa[i][j]*(koszty_zakupu[i]+koszty_transportu[i][j])
+
+    f = open("wynik.txt", "a")
+    f.write("\nKoszt calkowity:\n")
+    f.write(str(koszt_calkowity))
+    f.close()
+    return koszt_calkowity   
+
+def zapisz_optymalna_tablice_transportowa(tab_transportowa):
+    f = open("wynik.txt", "a")
+    f.write("\n\nOptymalna tablica transportowa:\n")
+    f.write("  |_O1_|_O2_|_FO_|\n")    
+    for i in range(4):
+        if i!=3:
+            f.write("D"+str(i+1)+"| ")
+        else:
+            f.write("FD"+"| ")    
+        for j in range(3):
+            if tab_transportowa[i][j]>=100:
+                f.write(str(int(tab_transportowa[i][j]))+"| ")
+            elif tab_transportowa[i][j]>=10:
+                f.write(str(int(tab_transportowa[i][j]))+" | ")
+            else:
+                f.write(str(int(tab_transportowa[i][j]))+"  | ")    
+        f.write("\n")    
+    f.close()        
+

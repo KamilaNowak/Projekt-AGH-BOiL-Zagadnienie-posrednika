@@ -84,7 +84,7 @@ f.close()
 
 if __name__ == "__main__":
     # wyznaczenie zysków jednostkowych (zyski_temp)
-    zyski_jednostkowe = funkcje.licz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu)
+    zyski_jednostkowe = funkcje.licz_i_zapisz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu)
     print("\nZyski jednostkowe:")
     print(zyski_jednostkowe)
     # wyznaczenie tablicy transportowej (plan_przewozow)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     print("\nTablica transportowa:")
     print(tablica_transportowa)
 
-    funkcje.zapisz_zyski_do_pliku(zyski_jednostkowe, tablica_transportowa, 0)
+    funkcje.zapisz_zysk_calkowity_do_pliku(zyski_jednostkowe, tablica_transportowa, 0)
 
     # Wyznaczenie alfy i bety
     alfa, beta = funkcje.licz_alfa_beta(tablica_transportowa, zyski_jednostkowe)
@@ -106,7 +106,18 @@ if __name__ == "__main__":
     print(delty)
 
     print("\nMaksymalizacja zyskow:")
-    print(funkcje.licz_maksymalizacje_zyskow(tablica_transportowa, delty))
+    tablica_transportowa=funkcje.licz_maksymalizacje_zyskow(tablica_transportowa, delty)
+    print(tablica_transportowa)
+
+    print("\nKoszty zakupu:")
+    print(koszty_zakupu)
+    print("\nKoszty transportu:")
+    print(koszty_transportu)
+
+    print("\nKoszt calkowity:")
+    print(funkcje.licz_i_zapisz_koszt_calkowity(tablica_transportowa,koszty_zakupu,koszty_transportu))
+
+    funkcje.zapisz_optymalna_tablice_transportowa(tablica_transportowa)
 
     print("\nTEST PRZYKLADU:")
     delty_test = np.array([[0., -7, 0., -3.], [-2., 0., 0., 1.], [-9., -5., 0., 0.]])
