@@ -1,7 +1,6 @@
 import numpy as np  # Do ułatwienia operacji na tablicach
 from math import isnan
 
-
 # funkcja liczy zyski jednostkowe na trasach, i zwraca macierz z wynikami
 def licz_i_zapisz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu):
     zyski_jednostkowe = np.zeros(shape=(3, 2))
@@ -124,8 +123,8 @@ def zapisz_zysk_calkowity_do_pliku(zyski_jednostkowe, plan_przewozow, kontrola):
     f.write(str(zyski) + "\n")
     f.close()
 
-# funckja maksymalizuje zyski soiagane przez posrednika.
-# Tzn wybiera dodatni element w tablicy i dodaje/odejmuje wartość minimum z z tych tras/
+# funckja maksymalizuje zyski osiagane przez posrednika.
+# Tzn wybiera dodatni element w tablicy i dodaje/odejmuje wartość minimum z  tych tras/
 def licz_maksymalizacje_zyskow(tab_transportowa, delty):
 
     wiersze, kolumny = np.where(delty > 0.)

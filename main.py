@@ -1,7 +1,9 @@
 import numpy as np  # Do ułatwienia operacji na tablicach
 from math import isnan
 import funkcje
+import math
 
+blokada = 1e50
 # deklaracja tablic, aby mozna bylo potem łatwo operować na danych
 koszty_transportu = np.zeros(shape=(3, 2))
 ceny_sprzedazy = np.zeros([2])
@@ -29,43 +31,37 @@ for x in f1:
     # koszt przewozu
     if (y == 11):
         if "x" in x:
-            print("Trasa zablokowana")
-            koszty_transportu[0][0] = "zablokowana"
+            koszty_transportu[0][0] = blokada
         else:
             kp_D1_O1 = int(x)
             koszty_transportu[0][0] = int(x)
     if (y == 13):
         if "x" in x:
-            print("Trasa zablokowana")
-            koszty_transportu[0][1] = "zablokowana"
+            koszty_transportu[0][1] = blokada
         else:
             kp_D1_O2 = int(x)
             koszty_transportu[0][1] = int(x)
     if (y == 15):
         if "x" in x:
-            print("Trasa zablokowana")
-            koszty_transportu[1][0] = "zablokowana"
+            koszty_transportu[1][0] = blokada
         else:
             kp_D2_O1 = int(x)
             koszty_transportu[1][0] = int(x)
     if (y == 17):
         if "x" in x:
-            print("Trasa zablokowana")
-            koszty_transportu[1][1] = "zablokowana"
+            koszty_transportu[1][1] = blokada
         else:
             kp_D2_O2 = int(x)
             koszty_transportu[1][1] = int(x)
     if (y == 19):
         if "x" in x:
-            print("Trasa zablokowana")
-            koszty_transportu[2][0] = "zablokowana"
+            koszty_transportu[2][0] = blokada
         else:
             kp_D3_O1 = int(x)
             koszty_transportu[2][0] = int(x)
     if (y == 21):
         if "x" in x:
-            print("Trasa zablokowana")
-            koszty_transportu[2][1] = "zablokowana"
+            koszty_transportu[2][1] = blokada
         else:
             kp_D3_O2 = int(x)
             koszty_transportu[2][1] = int(x)
@@ -84,6 +80,9 @@ f.close()
 
 if __name__ == "__main__":
     # wyznaczenie zysków jednostkowych (zyski_temp)
+
+    print("\nKoszty transportu:")
+    print(koszty_transportu)
     zyski_jednostkowe = funkcje.licz_i_zapisz_zyski_jednostkowe(ceny_sprzedazy, koszty_zakupu, koszty_transportu)
     print("\nZyski jednostkowe:")
     print(zyski_jednostkowe)
